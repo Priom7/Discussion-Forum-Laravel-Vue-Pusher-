@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PostResource;
 use App\Model\Post;
+use Facade\FlareClient\Http\Response;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -15,17 +17,10 @@ class PostController extends Controller
     public function index()
     {
         //
+        return PostResource::collection(Post::latest()->get());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -36,6 +31,9 @@ class PostController extends Controller
     public function store(Request $request)
     {
         //
+        // auth()->user()->post()->create($request->all());
+        Post::create($request->all());
+        return response('Created', 201);
     }
 
     /**
@@ -47,18 +45,10 @@ class PostController extends Controller
     public function show(Post $post)
     {
         //
+        return new PostResource($post);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Model\Post  $post
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Post $post)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.
@@ -70,6 +60,8 @@ class PostController extends Controller
     public function update(Request $request, Post $post)
     {
         //
+        $post->update($request->all());
+        return response('Updated', 202);
     }
 
     /**
@@ -81,5 +73,7 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         //
+        $post->delete();
+        return response('Deleted', 204);
     }
 }
