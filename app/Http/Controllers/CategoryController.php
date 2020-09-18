@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Model\Category;
+use Facade\FlareClient\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
 
 class CategoryController extends Controller
 {
@@ -15,17 +18,10 @@ class CategoryController extends Controller
     public function index()
     {
         //
+        return Category::latest()->get();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -36,6 +32,12 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         //
+        // Category::create($request->all());
+        $category = new Category;
+        $category->name = $request->name;
+        $category->slug = Str::slug($request->name);
+        $category->save();
+        return response('created', 201);
     }
 
     /**
@@ -47,18 +49,9 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         //
+        return $category;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Model\Category  $category
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Category $category)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -70,6 +63,8 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         //
+        $category->update(['name' => $request->name, 'slug' => Str::slug($request->name)]);
+        return response('Updated', 200);
     }
 
     /**
@@ -81,5 +76,8 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         //
+
+        $category->delete();
+        return response('Deleted', 204);
     }
 }
